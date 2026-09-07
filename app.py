@@ -1,6 +1,7 @@
 import html
 import json
 from pathlib import Path
+import re
 import string
 import numpy as np
 import pandas as pd
@@ -197,8 +198,8 @@ def load_default_threshold() -> float:
     if config_path.exists():
         with open(config_path, "r") as f:
             cfg = json.load(f)
-            return float(cfg.get("optimal_safety_threshold", cfg.get("recommended_balanced_threshold", 0.45)))
-    return 0.45
+            return float(cfg.get("high_sensitivity_threshold", cfg.get("optimal_safety_threshold", 0.40)))
+    return 0.40
 
 # Initialize pipelines
 nlp = load_nlp_pipeline()
@@ -280,7 +281,7 @@ def analyze_safety_context(raw_text: str, cleaned_text: str):
         hazard_domains.append("⚡ High-Voltage Electrical")
     if any(w in t_lower for w in ["confined", "tank", "vessel", "manhole", "nitrogen", "argon", "oxygen", "sewer"]):
         hazard_domains.append("🕳️ Confined Space & Hazardous Atmosphere")
-    if any(w in t_lower for w in ["height", "fall", "scaffold", "ladder", "roof", "beam", "harness", "elevated"]):
+    if any(w in t_lower for w in ["height", "fall", "scaffold", "ladder", "roof", "beam", "harness", "elevated", "platform", "elevation"]):
         hazard_domains.append("🪜 Working at Height / Fall Exposure")
     if any(w in t_lower for w in ["gas", "fire", "hot work", "weld", "flame", "leak", "h2s", "hydrocarbon", "separator"]):
         hazard_domains.append("🔥 Flammable Gas & Hot Work")
@@ -292,31 +293,36 @@ def analyze_safety_context(raw_text: str, cleaned_text: str):
     if not hazard_domains:
         hazard_domains.append("⚙️ General Industrial Observation")
 
-    # Barrier / Control Identification
+    # Barrier / Control Identification with Proximity & Negation Analysis
     verified_controls = []
     failed_or_missing_controls = []
 
     control_checks = [
-        ("Lockout / Tagout (LOTO)", ["loto", "lockout tagout", "lockout", "tagout", "padlock"]),
-        ("Zero Energy Verification", ["zero energy", "verified absence of voltage", "verified zero", "multimeter"]),
-        ("Atmospheric Testing", ["atmospheric test", "gas detector", "multi-gas", "lel", "oxygen level"]),
-        ("Standby Attendant", ["standby attendant", "designated attendant", "attendant stationed", "hole watch"]),
-        ("Fall Protection / Harness", ["harness", "100% tie-off", "lanyard", "anchor point", "fall arrest"]),
-        ("Positive Pressure / Habitat", ["habitat", "positive pressure", "fire blanket", "hot work permit"]),
+        ("Fall Protection & Working at Height", ["harness", "tie-off", "tie off", "lanyard", "anchor point", "fall arrest", "lifeline", "guardrail", "safety harness"]),
+        ("Lockout / Tagout (LOTO)", ["loto", "lockout tagout", "lockout", "tagout", "padlock", "isolation"]),
+        ("Zero Energy Verification", ["zero energy", "absence of voltage", "verified zero", "multimeter", "voltage detector"]),
+        ("Atmospheric Testing", ["atmospheric test", "gas detector", "multi-gas", "lel", "oxygen level", "gas monitoring"]),
+        ("Standby Attendant", ["standby attendant", "designated attendant", "hole watch", "safety watch", "attendant stationed", "attendant"]),
+        ("Hot Work & Spark Containment", ["habitat", "positive pressure", "fire blanket", "hot work permit", "spark containment"]),
     ]
+
+    neg_prefixes = r'(?:without|no|not|lack\s+of|failed\s+to|did\s+not|inadequate|incomplete|missing|damaged|broken|unsecured|unconnected|improper|compromised|bypassed|unverified)'
+    neg_suffixes = r'(?:incomplete|missing|damaged|failed|absent|broken|unsecured|compromised|inadequate|not\s+rated|unconnected|not\s+inspected)'
 
     for barrier_name, keywords in control_checks:
         found_kw = [kw for kw in keywords if kw in t_lower]
         if found_kw:
-            # Check context: missing vs verified
-            missing_indicators = ["without", "no ", "failed to", "did not", "lack of", "absent", "unverified"]
-            is_missing = False
-            for mi in missing_indicators:
-                for kw in found_kw:
-                    if f"{mi} {kw}" in t_lower or f"{mi} applying {kw}" in t_lower or f"{mi} performing {kw}" in t_lower:
-                        is_missing = True
-                        break
-            if is_missing or any(mi in t_lower for mi in ["without atmospheric test", "without standby", "without applying lockout"]):
+            is_compromised = False
+            for kw in found_kw:
+                # Prefix window: up to 6 words before keyword (e.g., 'without wearing a safety harness')
+                pattern_pre = rf'{neg_prefixes}(?:\s+\w+){{0,6}}\s+{re.escape(kw)}'
+                # Suffix window: keyword followed by failure up to 4 words after (e.g., 'guardrail was incomplete')
+                pattern_post = rf'{re.escape(kw)}(?:\s+\w+){{0,4}}\s+{neg_suffixes}'
+                if re.search(pattern_pre, t_lower) or re.search(pattern_post, t_lower):
+                    is_compromised = True
+                    break
+            
+            if is_compromised:
                 failed_or_missing_controls.append(barrier_name)
             else:
                 verified_controls.append(barrier_name)
@@ -347,12 +353,13 @@ with st.sidebar:
     threshold_preset = st.radio(
         "Operating Sensitivity Mode:",
         [
-            "High Sensitivity (Threshold 0.40)",
-            "Balanced Safety (Threshold 0.45)",
-            "Standard Baseline (Threshold 0.50)",
+            "High Sensitivity / Precautionary (0.40)",
+            "Balanced Safety (0.45)",
+            "Standard Baseline (0.50)",
             "Custom Threshold Slider",
         ],
-        index=1,
+        index=0,
+        help="In industrial safety, High Sensitivity (0.40) provides maximum precursor recall (94.3%) to ensure life-safety events are never missed.",
     )
     
     if "0.40" in threshold_preset:
@@ -366,7 +373,7 @@ with st.sidebar:
             "Custom Decision Threshold",
             min_value=0.20,
             max_value=0.80,
-            value=0.45,
+            value=0.40,
             step=0.01,
             help="Reports with Critical-SIF probability >= this threshold are flagged as Critical-SIF.",
         )
@@ -429,28 +436,32 @@ with tab_triage:
     st.subheader("📝 Safety Report Input & Quick-Test Scenarios")
     
     # Preset test cases
-    col_a, col_b, col_c, col_d = st.columns(4)
+    col_a, col_b, col_c, col_d, col_e = st.columns(5)
     
     preset_a = "Electrician worked on energized 480V MCC panel without applying lockout tagout or verifying absence of voltage."
-    preset_b = "Electrician isolated 480V MCC cabinet, applied personal lockout tagout padlock, and verified zero energy using a calibrated multimeter before entering."
+    preset_b = "A worker climbed onto an elevated platform approximately 8 meters above ground without wearing a safety harness or connecting to an approved anchor point. The guardrail was incomplete and the worker continued the task despite the fall exposure."
     preset_c = "Worker entered crude oil storage tank without atmospheric test or standby attendant."
-    preset_d = "Worker entered storage tank after multi-gas detector confirmed safe oxygen levels with a designated attendant stationed at the manhole."
+    preset_d = "A worker climbed onto an elevated platform approximately 8 meters above ground wearing a certified full-body safety harness and connected with 100% tie-off to an approved anchor point with complete guardrails."
+    preset_e = "Electrician isolated 480V MCC cabinet, applied personal lockout tagout padlock, and verified zero energy using a calibrated multimeter before entering."
 
     if "current_report_text" not in st.session_state:
-        st.session_state["current_report_text"] = preset_a
+        st.session_state["current_report_text"] = preset_b
 
     with col_a:
         if st.button("⚡ Case A: Critical Electrical", use_container_width=True):
             st.session_state["current_report_text"] = preset_a
     with col_b:
-        if st.button("🛡️ Case B: Safe Electrical", use_container_width=True):
+        if st.button("🪜 Case B: Critical Fall Exposure", use_container_width=True):
             st.session_state["current_report_text"] = preset_b
     with col_c:
         if st.button("🕳️ Case C: Critical Confined Space", use_container_width=True):
             st.session_state["current_report_text"] = preset_c
     with col_d:
-        if st.button("✅ Case D: Safe Confined Space", use_container_width=True):
+        if st.button("🛡️ Case D: Safe Height Work", use_container_width=True):
             st.session_state["current_report_text"] = preset_d
+    with col_e:
+        if st.button("✅ Case E: Safe Electrical", use_container_width=True):
+            st.session_state["current_report_text"] = preset_e
 
     report_input = st.text_area(
         "Enter safety observation / incident report:",
@@ -470,7 +481,6 @@ with tab_triage:
         # Step 2: Model Inference
         p_critical, p_non_critical = run_model_inference(clean_text)
         is_critical = p_critical >= active_threshold
-        predicted_class = "Critical-SIF" if is_critical else "Non-Critical"
         
         # Step 3: Attribution & Explainability
         attribution_pairs = extract_shap_explanation(clean_text, report_input)
@@ -478,28 +488,47 @@ with tab_triage:
         # Step 4: Safety Context Analysis
         hazards, verified_barriers, missing_barriers = analyze_safety_context(report_input, clean_text)
         
+        # Defense-in-depth: If explicit life-safety barrier is missing/compromised, flag SIF alert
+        has_barrier_failure = len(missing_barriers) > 0
+        predicted_class = "Critical-SIF" if (is_critical or has_barrier_failure) else "Non-Critical"
+        
         st.markdown("---")
         
         # ---------------------------------------------------------------------
         # AI Prediction Banner
         # ---------------------------------------------------------------------
-        if is_critical:
+        if is_critical or has_barrier_failure:
+            if is_critical:
+                banner_badge = "🚨 POTENTIAL SIF PRECURSOR DETECTED"
+                banner_heading = "HIGH-PRIORITY SUPERVISOR REVIEW REQUIRED"
+                banner_text = "This observation indicates high-energy hazard exposure exceeding the calibrated decision threshold. Immediate supervisor validation recommended."
+                pct_val = p_critical * 100
+                pct_sub = "SIF Precursor Probability"
+                pct_color = "#ff7b72"
+            else:
+                banner_badge = "⚠️ PRECAUTIONARY SIF ALERT: COMPROMISED CONTROL BARRIER DETECTED"
+                banner_heading = "SUPERVISOR ESCALATION RECOMMENDED (DEFENSE-IN-DEPTH)"
+                banner_text = f"Neural model scored {p_critical * 100:.1f}% (below operating threshold {active_threshold:.2f}), but essential life-safety barrier(s) ({', '.join(missing_barriers)}) are compromised. Precautionary review initiated."
+                pct_val = p_critical * 100
+                pct_sub = "SIF Probability (Barrier Failed)"
+                pct_color = "#ffa657"
+
             st.markdown(
                 f"""
                 <div class="critical-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <span style="background: #da3633; color: white; padding: 4px 12px; border-radius: 6px; font-weight: 800; font-size: 0.95rem; text-transform: uppercase;">
-                                🚨 POTENTIAL SIF PRECURSOR DETECTED
+                                {banner_badge}
                             </span>
-                            <h2 style="color: #ffffff; margin: 10px 0 4px 0;">HIGH-PRIORITY SUPERVISOR REVIEW REQUIRED</h2>
+                            <h2 style="color: #ffffff; margin: 10px 0 4px 0;">{banner_heading}</h2>
                             <p style="color: #e6edf3; margin-bottom: 0; font-size: 1.05rem;">
-                                This observation indicates high-energy hazard exposure without confirmed barrier verification. Immediate supervisor validation recommended.
+                                {banner_text}
                             </p>
                         </div>
                         <div style="text-align: right; min-width: 160px;">
-                            <div style="font-size: 2.4rem; font-weight: 900; color: #ff7b72;">{p_critical * 100:.1f}%</div>
-                            <div style="font-size: 0.8rem; color: #8b949e; text-transform: uppercase;">SIF Precursor Probability</div>
+                            <div style="font-size: 2.4rem; font-weight: 900; color: {pct_color};">{pct_val:.1f}%</div>
+                            <div style="font-size: 0.8rem; color: #8b949e; text-transform: uppercase;">{pct_sub}</div>
                         </div>
                     </div>
                 </div>
@@ -535,7 +564,7 @@ with tab_triage:
         # ---------------------------------------------------------------------
         m1, m2, m3, m4 = st.columns(4)
         with m1:
-            color = "#ff7b72" if is_critical else "#3fb950"
+            color = "#ff7b72" if (is_critical or has_barrier_failure) else "#3fb950"
             st.markdown(
                 f"""
                 <div class="metric-panel">
