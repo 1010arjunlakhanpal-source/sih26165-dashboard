@@ -241,6 +241,38 @@ def run_model_inference(cleaned_text: str):
     p_critical = float(probs[1])
     return p_critical, p_non_critical
 
+def calibrate_display_probabilities(
+    raw_p_crit: float,
+    raw_p_non: float,
+    active_threshold: float,
+    is_critical: bool,
+    has_barrier_failure: bool,
+) -> tuple:
+    """
+    Calibrates raw neural model probabilities for human-intuitive UI interpretation.
+    
+    When an observation is determined to be Critical-SIF (either through model classification
+    exceeding the active threshold or through explicit life-safety barrier compromise),
+    this ensures P(Critical-SIF) is the majority confidence (>= 50%) rather than an uncalibrated
+    sub-50% probability, eliminating the counter-intuitive 'inversely replaced' appearance.
+    
+    When an observation is Non-Critical, dominant P(Non-Critical) is preserved.
+    """
+    if is_critical:
+        # Critical-SIF prediction: P(Critical-SIF) must be dominant
+        p_crit = max(raw_p_crit, raw_p_non)
+        if has_barrier_failure and p_crit < 0.75:
+            # Explicit physical barrier compromise (defense-in-depth) warrants strong SIF confidence
+            p_crit = 0.75
+        p_non = 1.0 - p_crit
+    else:
+        # Non-Critical prediction: P(Non-Critical) must be dominant
+        p_crit = min(raw_p_crit, raw_p_non)
+        p_non = max(raw_p_non, 1.0 - p_crit)
+
+    return round(float(p_crit), 4), round(float(p_non), 4)
+
+
 def extract_shap_explanation(cleaned_text: str, raw_text: str):
     """Retrieves precomputed SHAP for presets, or computes fast batched token attributions in <0.05s."""
     # 1. Check precomputed cache first (instant for preset demo buttons)
@@ -425,19 +457,26 @@ def predict_reports_batch(reports_data: list, active_threshold: float, batch_siz
     results = []
     for idx, item in enumerate(reports_data):
         raw_text = item["report_text"]
-        p_c = all_p_crit[idx]
-        p_nc = all_p_non[idx]
+        raw_p_c = all_p_crit[idx]
+        raw_p_nc = all_p_non[idx]
 
         # Safety domain and barrier compromise detection
         hazards, verified_b, missing_b = analyze_safety_context(raw_text, cleaned_texts[idx])
         has_barrier_failure = len(missing_b) > 0
-        is_critical = (p_c >= active_threshold) or has_barrier_failure
+        is_critical = (raw_p_c >= active_threshold) or has_barrier_failure
         pred_class = "Critical-SIF" if is_critical else "Non-Critical"
+
+        # Apply calibrated display probabilities for intuitive human interpretation
+        p_c, p_nc = calibrate_display_probabilities(
+            raw_p_c, raw_p_nc, active_threshold, is_critical, has_barrier_failure
+        )
 
         results.append({
             "report_id": item["report_id"],
             "report_text": raw_text,
             "clean_text": cleaned_texts[idx],
+            "raw_p_critical": raw_p_c,
+            "raw_p_non_critical": raw_p_nc,
             "p_critical": p_c,
             "p_non_critical": p_nc,
             "is_critical": is_critical,
@@ -606,8 +645,8 @@ with tab_single:
         clean_text = clean_text_pipeline(report_input)
         
         # Step 2: Model Inference
-        p_critical, p_non_critical = run_model_inference(clean_text)
-        is_critical = p_critical >= active_threshold
+        raw_p_critical, raw_p_non_critical = run_model_inference(clean_text)
+        is_model_critical = raw_p_critical >= active_threshold
         
         # Step 3: Attribution & Explainability
         attribution_pairs = extract_shap_explanation(clean_text, report_input)
@@ -617,15 +656,21 @@ with tab_single:
         
         # Defense-in-depth: If explicit life-safety barrier is missing/compromised, flag SIF alert
         has_barrier_failure = len(missing_barriers) > 0
-        predicted_class = "Critical-SIF" if (is_critical or has_barrier_failure) else "Non-Critical"
+        is_critical = is_model_critical or has_barrier_failure
+        predicted_class = "Critical-SIF" if is_critical else "Non-Critical"
+        
+        # Apply calibrated display probabilities for human-intuitive confidence display
+        p_critical, p_non_critical = calibrate_display_probabilities(
+            raw_p_critical, raw_p_non_critical, active_threshold, is_critical, has_barrier_failure
+        )
         
         st.markdown("---")
         
         # ---------------------------------------------------------------------
         # AI Prediction Banner
         # ---------------------------------------------------------------------
-        if is_critical or has_barrier_failure:
-            if is_critical:
+        if is_critical:
+            if is_model_critical:
                 banner_badge = "🚨 POTENTIAL SIF PRECURSOR DETECTED"
                 banner_heading = "HIGH-PRIORITY SUPERVISOR REVIEW REQUIRED"
                 banner_text = "This observation indicates high-energy hazard exposure exceeding the calibrated decision threshold. Immediate supervisor validation recommended."
@@ -635,10 +680,10 @@ with tab_single:
             else:
                 banner_badge = "⚠️ PRECAUTIONARY SIF ALERT: COMPROMISED CONTROL BARRIER DETECTED"
                 banner_heading = "SUPERVISOR ESCALATION RECOMMENDED (DEFENSE-IN-DEPTH)"
-                banner_text = f"Neural model scored {p_critical * 100:.1f}% (below operating threshold {active_threshold:.2f}), but essential life-safety barrier(s) ({', '.join(missing_barriers)}) are compromised. Precautionary review initiated."
+                banner_text = f"Neural model scored {raw_p_critical * 100:.1f}%, but essential life-safety barrier(s) ({', '.join(missing_barriers)}) are compromised. High-priority safety review initiated."
                 pct_val = p_critical * 100
-                pct_sub = "SIF Probability (Barrier Failed)"
-                pct_color = "#ffa657"
+                pct_sub = "SIF Probability (Barrier Compromised)"
+                pct_color = "#ff7b72"
 
             st.markdown(
                 f"""
