@@ -1,0 +1,11 @@
+report_id,report_text
+OIL-001,"Electrician worked on energized 480V MCC panel without applying lockout tagout or verifying absence of voltage."
+OIL-002,"A worker climbed onto an elevated platform approximately 8 meters above ground without wearing a safety harness or connecting to an approved anchor point. The guardrail was incomplete and the worker continued the task despite the fall exposure."
+OIL-003,"Electrician isolated 480V MCC cabinet, applied personal lockout tagout padlock, and verified zero energy using a calibrated multimeter before entering."
+OIL-004,"Entry team entered crude oil storage tank without atmospheric multi-gas testing or a designated standby attendant."
+OIL-005,"Personnel were standing beneath an active suspended crane load during mud pump lifting operations on the drill floor."
+OIL-006,"Worker entered storage tank after multi-gas detector confirmed safe oxygen levels with a designated attendant stationed at the manhole."
+OIL-007,"Welding team conducted structural hot work near open condensate separator without gas testing, spark containment habitat, or hot work permit."
+OIL-008,"A worker climbed onto an elevated platform approximately 8 meters above ground wearing a certified full-body safety harness and connected with 100% tie-off to an approved anchor point with complete guardrails."
+OIL-009,"Forklift operator reversed at excessive speed in a blind pedestrian warehouse corridor with a malfunctioning backup beeper."
+OIL-010,"Maintenance crew deployed ATEX Zone 1 certified intrinsically safe inspection lights and verified zero LEL hydrocarbons before entering separator vessel."
