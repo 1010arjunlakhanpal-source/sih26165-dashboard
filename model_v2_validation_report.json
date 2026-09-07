@@ -1,0 +1,829 @@
+{
+  "report_title": "Phase 8 Model V2 Retraining & Multi-Benchmark Validation Report",
+  "timestamp": "2026-09-06",
+  "model_architecture": "distilbert-base-uncased",
+  "training_dataset": "improved_train.csv (616 rows: 480 original train + 136 synthetic hard-negatives)",
+  "held_out_original_test": "original_test_preserved.csv (120 rows)",
+  "unseen_hard_negative_benchmark": "hard_negative_test.csv (39 rows)",
+  "selected_optimal_threshold_v2": 0.4,
+  "original_test_evaluation": {
+    "default_threshold_0_50": {
+      "threshold": 0.5,
+      "accuracy": 0.6166666666666667,
+      "critical_precision": 0.5522388059701493,
+      "critical_recall": 0.6981132075471698,
+      "critical_f1": 0.6166666666666667,
+      "macro_f1": 0.6166666666666667,
+      "non_critical_recall": 0.5522388059701493,
+      "confusion_matrix": [
+        [
+          37,
+          30
+        ],
+        [
+          16,
+          37
+        ]
+      ],
+      "tp": 37,
+      "fp": 30,
+      "tn": 37,
+      "fn": 16
+    },
+    "optimal_safety_threshold": {
+      "threshold": 0.4,
+      "accuracy": 0.525,
+      "critical_precision": 0.4803921568627451,
+      "critical_recall": 0.9245283018867925,
+      "critical_f1": 0.632258064516129,
+      "macro_f1": 0.4808349146110057,
+      "non_critical_recall": 0.208955223880597,
+      "confusion_matrix": [
+        [
+          14,
+          53
+        ],
+        [
+          4,
+          49
+        ]
+      ],
+      "tp": 49,
+      "fp": 53,
+      "tn": 14,
+      "fn": 4
+    },
+    "threshold_sweep_grid": [
+      {
+        "threshold": 0.3,
+        "accuracy": 0.4583333333333333,
+        "critical_precision": 0.44642857142857145,
+        "critical_recall": 0.9433962264150944,
+        "critical_f1": 0.6060606060606061,
+        "macro_f1": 0.3696969696969697,
+        "non_critical_recall": 0.07462686567164178,
+        "confusion_matrix": [
+          [
+            5,
+            62
+          ],
+          [
+            3,
+            50
+          ]
+        ],
+        "tp": 50,
+        "fp": 62,
+        "tn": 5,
+        "fn": 3
+      },
+      {
+        "threshold": 0.35,
+        "accuracy": 0.48333333333333334,
+        "critical_precision": 0.45871559633027525,
+        "critical_recall": 0.9433962264150944,
+        "critical_f1": 0.6172839506172839,
+        "macro_f1": 0.41120607787274455,
+        "non_critical_recall": 0.11940298507462686,
+        "confusion_matrix": [
+          [
+            8,
+            59
+          ],
+          [
+            3,
+            50
+          ]
+        ],
+        "tp": 50,
+        "fp": 59,
+        "tn": 8,
+        "fn": 3
+      },
+      {
+        "threshold": 0.4,
+        "accuracy": 0.525,
+        "critical_precision": 0.4803921568627451,
+        "critical_recall": 0.9245283018867925,
+        "critical_f1": 0.632258064516129,
+        "macro_f1": 0.4808349146110057,
+        "non_critical_recall": 0.208955223880597,
+        "confusion_matrix": [
+          [
+            14,
+            53
+          ],
+          [
+            4,
+            49
+          ]
+        ],
+        "tp": 49,
+        "fp": 53,
+        "tn": 14,
+        "fn": 4
+      },
+      {
+        "threshold": 0.45,
+        "accuracy": 0.5583333333333333,
+        "critical_precision": 0.5,
+        "critical_recall": 0.7924528301886793,
+        "critical_f1": 0.6131386861313869,
+        "macro_f1": 0.5492877896676351,
+        "non_critical_recall": 0.373134328358209,
+        "confusion_matrix": [
+          [
+            25,
+            42
+          ],
+          [
+            11,
+            42
+          ]
+        ],
+        "tp": 42,
+        "fp": 42,
+        "tn": 25,
+        "fn": 11
+      },
+      {
+        "threshold": 0.48,
+        "accuracy": 0.5666666666666667,
+        "critical_precision": 0.5066666666666667,
+        "critical_recall": 0.7169811320754716,
+        "critical_f1": 0.59375,
+        "macro_f1": 0.5647321428571428,
+        "non_critical_recall": 0.44776119402985076,
+        "confusion_matrix": [
+          [
+            30,
+            37
+          ],
+          [
+            15,
+            38
+          ]
+        ],
+        "tp": 38,
+        "fp": 37,
+        "tn": 30,
+        "fn": 15
+      },
+      {
+        "threshold": 0.5,
+        "accuracy": 0.6166666666666667,
+        "critical_precision": 0.5522388059701493,
+        "critical_recall": 0.6981132075471698,
+        "critical_f1": 0.6166666666666667,
+        "macro_f1": 0.6166666666666667,
+        "non_critical_recall": 0.5522388059701493,
+        "confusion_matrix": [
+          [
+            37,
+            30
+          ],
+          [
+            16,
+            37
+          ]
+        ],
+        "tp": 37,
+        "fp": 30,
+        "tn": 37,
+        "fn": 16
+      },
+      {
+        "threshold": 0.52,
+        "accuracy": 0.5416666666666666,
+        "critical_precision": 0.48148148148148145,
+        "critical_recall": 0.49056603773584906,
+        "critical_f1": 0.48598130841121495,
+        "macro_f1": 0.5362237369123743,
+        "non_critical_recall": 0.582089552238806,
+        "confusion_matrix": [
+          [
+            39,
+            28
+          ],
+          [
+            27,
+            26
+          ]
+        ],
+        "tp": 26,
+        "fp": 28,
+        "tn": 39,
+        "fn": 27
+      },
+      {
+        "threshold": 0.55,
+        "accuracy": 0.55,
+        "critical_precision": 0.4897959183673469,
+        "critical_recall": 0.4528301886792453,
+        "critical_f1": 0.47058823529411764,
+        "macro_f1": 0.5396419437340154,
+        "non_critical_recall": 0.6268656716417911,
+        "confusion_matrix": [
+          [
+            42,
+            25
+          ],
+          [
+            29,
+            24
+          ]
+        ],
+        "tp": 24,
+        "fp": 25,
+        "tn": 42,
+        "fn": 29
+      },
+      {
+        "threshold": 0.6,
+        "accuracy": 0.5666666666666667,
+        "critical_precision": 0.5172413793103449,
+        "critical_recall": 0.2830188679245283,
+        "critical_f1": 0.36585365853658536,
+        "macro_f1": 0.5183698672429762,
+        "non_critical_recall": 0.7910447761194029,
+        "confusion_matrix": [
+          [
+            53,
+            14
+          ],
+          [
+            38,
+            15
+          ]
+        ],
+        "tp": 15,
+        "fp": 14,
+        "tn": 53,
+        "fn": 38
+      },
+      {
+        "threshold": 0.7,
+        "accuracy": 0.5583333333333333,
+        "critical_precision": 0.0,
+        "critical_recall": 0.0,
+        "critical_f1": 0.0,
+        "macro_f1": 0.3582887700534759,
+        "non_critical_recall": 1.0,
+        "confusion_matrix": [
+          [
+            67,
+            0
+          ],
+          [
+            53,
+            0
+          ]
+        ],
+        "tp": 0,
+        "fp": 0,
+        "tn": 67,
+        "fn": 53
+      }
+    ]
+  },
+  "hard_negative_diagnostic_benchmark": {
+    "total_benchmark_samples": 39,
+    "compliant_samples": 29,
+    "unsafe_counterpart_samples": 10,
+    "metrics_at_optimal_threshold": {
+      "threshold": 0.4,
+      "accuracy": 0.6666666666666666,
+      "critical_precision": 0.42105263157894735,
+      "critical_recall": 0.8,
+      "critical_f1": 0.5517241379310345,
+      "macro_f1": 0.6432090077410275,
+      "non_critical_recall": 0.6206896551724138,
+      "confusion_matrix": [
+        [
+          18,
+          11
+        ],
+        [
+          2,
+          8
+        ]
+      ],
+      "tp": 8,
+      "fp": 11,
+      "tn": 18,
+      "fn": 2
+    },
+    "compliant_false_positive_count": 11,
+    "unsafe_false_negative_count": 2,
+    "all_sample_probabilities": [
+      {
+        "report_id": "SYN_CRIT_0011",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Operator cut overhead power cable bundle during demolition without positive verification of cable de-energization.",
+        "v2_critical_sif_probability": 0.5403,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7544
+      },
+      {
+        "report_id": "SYN_SAFE_0012",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Operator traced overhead power cable bundle back to substation source, confirmed open isolation switch, and spiked cable before cutting.",
+        "v2_critical_sif_probability": 0.5085,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7573
+      },
+      {
+        "report_id": "SYN_CRIT_0013",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Generator maintenance team reconnected main stator leads without testing earthing ground rod continuity or ground bonding.",
+        "v2_critical_sif_probability": 0.5096,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7526
+      },
+      {
+        "report_id": "SYN_SAFE_0014",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Generator maintenance team tested earthing ground rod resistance below 5 ohms and verified bond continuity before reconnecting main stator leads.",
+        "v2_critical_sif_probability": 0.4126,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7491
+      },
+      {
+        "report_id": "SYN_CRIT_0025",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Welding team performed structural arc welding on separator vessel roof while open vents were exhausting combustible gas vapors.",
+        "v2_critical_sif_probability": 0.492,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7331
+      },
+      {
+        "report_id": "SYN_SAFE_0026",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Welding team erected fire-rated habitat with positive pressure ventilation over separator roof and verified zero gas leakage from closed vents.",
+        "v2_critical_sif_probability": 0.3008,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6366
+      },
+      {
+        "report_id": "SYN_CRIT_0027",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Crew used non-intrinsically safe halogen floodlight inside battery charging room with visible hydrogen venting.",
+        "v2_critical_sif_probability": 0.418,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7251
+      },
+      {
+        "report_id": "SYN_SAFE_0028",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Crew deployed ATEX Zone 1 certified intrinsically safe LED work lights inside battery charging room with forced exhaust fan running.",
+        "v2_critical_sif_probability": 0.332,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.7329
+      },
+      {
+        "report_id": "SYN_CRIT_0039",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Welders operated argon gas TIG welding unit inside closed vessel without personal oxygen deficiency monitors or continuous extraction.",
+        "v2_critical_sif_probability": 0.3262,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6824
+      },
+      {
+        "report_id": "SYN_SAFE_0040",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Welders operated TIG unit inside vessel wearing calibrated personal O2 alarms with localized fume extraction hood running continuously.",
+        "v2_critical_sif_probability": 0.4007,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7049
+      },
+      {
+        "report_id": "SYN_CRIT_0041",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Standby watchman left entry hatch unattended for 45 minutes to get coffee while 2 entrants remained inside diesel tank.",
+        "v2_critical_sif_probability": 0.3846,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.3924
+      },
+      {
+        "report_id": "SYN_SAFE_0042",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Standby watchman remained at diesel tank entry hatch maintaining constant radio communication and logging entrant status every 10 minutes.",
+        "v2_critical_sif_probability": 0.3946,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6375
+      },
+      {
+        "report_id": "SYN_CRIT_0053",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Insulators used mobile scaffold tower on sloped gravel surface with unlocked caster wheels and missing outriggers at 8 meters height.",
+        "v2_critical_sif_probability": 0.623,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.6447
+      },
+      {
+        "report_id": "SYN_SAFE_0054",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Insulators locked all four caster wheels, deployed stabilizer outriggers, and leveled mobile scaffold base before climbing to 8 meters.",
+        "v2_critical_sif_probability": 0.5074,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7406
+      },
+      {
+        "report_id": "SYN_CRIT_0055",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Construction worker used damaged safety harness with fraying webbing cut across 40% of load-bearing chest strap.",
+        "v2_critical_sif_probability": 0.6541,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.6931
+      },
+      {
+        "report_id": "SYN_SAFE_0056",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Construction worker performed pre-use harness inspection, verified intact stitching and zero webbing fraying before ascending ladder.",
+        "v2_critical_sif_probability": 0.3855,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6852
+      },
+      {
+        "report_id": "SYN_CRIT_0065",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Crane boom passed within 4 feet of 33kV overhead power line with anti-two-block limit switch disabled.",
+        "v2_critical_sif_probability": 0.5962,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7504
+      },
+      {
+        "report_id": "SYN_SAFE_0066",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Crane boom operated with mechanical limit stops maintaining 20-foot buffer from 33kV power line with dedicated electrical spotter.",
+        "v2_critical_sif_probability": 0.4892,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.749
+      },
+      {
+        "report_id": "SYN_CRIT_0077",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Critical-SIF",
+        "report_text": "Tanker truck driver bypassed wheel chocking on 5% grade and exited cab with air brake valve in released position.",
+        "v2_critical_sif_probability": 0.4927,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.6771
+      },
+      {
+        "report_id": "SYN_SAFE_0078",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Tanker truck driver set primary maxi air brakes and placed heavy rubber wheel chocks under both drive axles before leaving cab.",
+        "v2_critical_sif_probability": 0.5173,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.6969
+      },
+      {
+        "report_id": "SYN_HN_0085",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Maintenance crew locked out 600V main feed circuit breaker, isolated pneumatic backup supply, and depressurized accumulator before servicing valve actuator.",
+        "v2_critical_sif_probability": 0.3932,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.7333
+      },
+      {
+        "report_id": "SYN_HN_0090",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Technician verified all high-voltage warning signs, interlock keys, and cabinet door locks were secure before energizing transformer bay.",
+        "v2_critical_sif_probability": 0.276,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.622
+      },
+      {
+        "report_id": "SYN_HN_0095",
+        "hazard_type": "Electrical",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Instrumentation crew checked calibration date on high-voltage test probes and verified dielectric rating prior to switchgear maintenance.",
+        "v2_critical_sif_probability": 0.2887,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.728
+      },
+      {
+        "report_id": "SYN_HN_0100",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Hot work team kept continuous water mist curtain active over drain sump while structural welding was performed on adjacent pipe rack.",
+        "v2_critical_sif_probability": 0.4671,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.711
+      },
+      {
+        "report_id": "SYN_HN_0105",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Maintenance crew inspected flame arrestor element on storage tank vent, cleaned stainless steel mesh, and re-torqued casing bolts.",
+        "v2_critical_sif_probability": 0.3061,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6857
+      },
+      {
+        "report_id": "SYN_HN_0110",
+        "hazard_type": "Fire-Explosion",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Safety lead conducted pre-shift combustible gas survey across process area with optical gas imaging camera, detecting zero fugitive emissions.",
+        "v2_critical_sif_probability": 0.3226,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.7357
+      },
+      {
+        "report_id": "SYN_HN_0115",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Standby attendant logged entrants entering and exiting ballast tank, maintaining two-way radio communication every 15 minutes.",
+        "v2_critical_sif_probability": 0.3099,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.601
+      },
+      {
+        "report_id": "SYN_HN_0120",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Cleaning crew verified explosion-proof 24V low-voltage lighting was connected through GFCI breaker before entry into fuel tank.",
+        "v2_critical_sif_probability": 0.3032,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6994
+      },
+      {
+        "report_id": "SYN_HN_0125",
+        "hazard_type": "Confined-Space",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Entry team confirmed certified air-supplied breathing apparatus cylinders were fully charged to 300 bar with backup escape packs donned.",
+        "v2_critical_sif_probability": 0.2788,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6129
+      },
+      {
+        "report_id": "SYN_HN_0130",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Riggers verified green scaffold tag was current, all handrails were pinned, and toe boards were securely in place before ascending platform.",
+        "v2_critical_sif_probability": 0.4693,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.6522
+      },
+      {
+        "report_id": "SYN_HN_0135",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Insulators erected barrier tape and warning signs on ground level to establish dropped object exclusion zone beneath elevated work area.",
+        "v2_critical_sif_probability": 0.3695,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6988
+      },
+      {
+        "report_id": "SYN_HN_0140",
+        "hazard_type": "Fall-from-height",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Worker maintained 3 points of contact while ascending fixed derrick ladder with front-fall arrester traveler locked into center rail.",
+        "v2_critical_sif_probability": 0.5313,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.7332
+      },
+      {
+        "report_id": "SYN_HN_0145",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Crane operator verified gross load was 60% of rated capacity chart and confirmed clear communication with dedicated signalman before lift.",
+        "v2_critical_sif_probability": 0.272,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.7195
+      },
+      {
+        "report_id": "SYN_HN_0150",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Rigging team verified shackle pins were safety-wired and hoist hook latch was fully locked over master link before lifting engine block.",
+        "v2_critical_sif_probability": 0.3718,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.7219
+      },
+      {
+        "report_id": "SYN_HN_0155",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Banksman halted crane swing immediately when unauthorized worker entered barricaded drop zone, resuming only after individual departed.",
+        "v2_critical_sif_probability": 0.5166,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.4796
+      },
+      {
+        "report_id": "SYN_HN_0160",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Deck supervisor confirmed all personnel stood clear of suspended subsea tree while hydraulic guide wires aligned it over moonpool.",
+        "v2_critical_sif_probability": 0.4661,
+        "v2_predicted_label_at_optimal": "Critical-SIF",
+        "v1_critical_sif_probability": 0.6874
+      },
+      {
+        "report_id": "SYN_HN_0165",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Site dump truck driver followed designated one-way haul road route adhering to 15 km/h site speed limit with headlights illuminated.",
+        "v2_critical_sif_probability": 0.2616,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.4224
+      },
+      {
+        "report_id": "SYN_HN_0170",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Forklift operator performed pre-shift inspection, verifying working backup beeper, headlights, seatbelt, and hydraulic fluid levels.",
+        "v2_critical_sif_probability": 0.2882,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6773
+      },
+      {
+        "report_id": "SYN_HN_0175",
+        "hazard_type": "Vehicle-Equipment",
+        "true_binary_risk": "Non-Critical",
+        "report_text": "Logistics coordinator enforced speed radar checks in plant pipe yard, confirming zero vehicle overspeed infractions across shift.",
+        "v2_critical_sif_probability": 0.2773,
+        "v2_predicted_label_at_optimal": "Non-Critical",
+        "v1_critical_sif_probability": 0.6705
+      }
+    ]
+  },
+  "counterfactual_pairs_analysis": {
+    "num_pairs": 10,
+    "mean_delta_p": 0.0788,
+    "median_delta_p": 0.0915,
+    "min_delta_p": -0.0745,
+    "max_delta_p": 0.2686,
+    "pairs_unsafe_gt_compliant": 7,
+    "pairs_compliant_gte_unsafe": 3,
+    "pairs_detail": [
+      {
+        "group_id": "CF_PAIR_ELEC_06",
+        "hazard_type": "Electrical",
+        "unsafe_report_text": "Operator cut overhead power cable bundle during demolition without positive verification of cable de-energization.",
+        "compliant_report_text": "Operator traced overhead power cable bundle back to substation source, confirmed open isolation switch, and spiked cable before cutting.",
+        "v2_p_unsafe": 0.5403463244438171,
+        "v2_p_compliant": 0.5084615349769592,
+        "v2_delta_p": 0.03188478946685791,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.7543525099754333,
+        "v1_p_compliant": 0.7573011517524719,
+        "v1_delta_p": -0.0029486417770385742,
+        "v1_unsafe_gt_compliant": false
+      },
+      {
+        "group_id": "CF_PAIR_ELEC_07",
+        "hazard_type": "Electrical",
+        "unsafe_report_text": "Generator maintenance team reconnected main stator leads without testing earthing ground rod continuity or ground bonding.",
+        "compliant_report_text": "Generator maintenance team tested earthing ground rod resistance below 5 ohms and verified bond continuity before reconnecting main stator leads.",
+        "v2_p_unsafe": 0.5096173882484436,
+        "v2_p_compliant": 0.4125921130180359,
+        "v2_delta_p": 0.09702527523040771,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.7526192665100098,
+        "v1_p_compliant": 0.7491393685340881,
+        "v1_delta_p": 0.003479897975921631,
+        "v1_unsafe_gt_compliant": true
+      },
+      {
+        "group_id": "CF_PAIR_GAS_06",
+        "hazard_type": "Fire-Explosion",
+        "unsafe_report_text": "Welding team performed structural arc welding on separator vessel roof while open vents were exhausting combustible gas vapors.",
+        "compliant_report_text": "Welding team erected fire-rated habitat with positive pressure ventilation over separator roof and verified zero gas leakage from closed vents.",
+        "v2_p_unsafe": 0.49199652671813965,
+        "v2_p_compliant": 0.30079683661460876,
+        "v2_delta_p": 0.19119969010353088,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.7331247925758362,
+        "v1_p_compliant": 0.6365717053413391,
+        "v1_delta_p": 0.09655308723449707,
+        "v1_unsafe_gt_compliant": true
+      },
+      {
+        "group_id": "CF_PAIR_GAS_07",
+        "hazard_type": "Fire-Explosion",
+        "unsafe_report_text": "Crew used non-intrinsically safe halogen floodlight inside battery charging room with visible hydrogen venting.",
+        "compliant_report_text": "Crew deployed ATEX Zone 1 certified intrinsically safe LED work lights inside battery charging room with forced exhaust fan running.",
+        "v2_p_unsafe": 0.41804802417755127,
+        "v2_p_compliant": 0.33204716444015503,
+        "v2_delta_p": 0.08600085973739624,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.7251016497612,
+        "v1_p_compliant": 0.7328662872314453,
+        "v1_delta_p": -0.007764637470245361,
+        "v1_unsafe_gt_compliant": false
+      },
+      {
+        "group_id": "CF_PAIR_CONF_06",
+        "hazard_type": "Confined-Space",
+        "unsafe_report_text": "Welders operated argon gas TIG welding unit inside closed vessel without personal oxygen deficiency monitors or continuous extraction.",
+        "compliant_report_text": "Welders operated TIG unit inside vessel wearing calibrated personal O2 alarms with localized fume extraction hood running continuously.",
+        "v2_p_unsafe": 0.32616594433784485,
+        "v2_p_compliant": 0.4006504714488983,
+        "v2_delta_p": -0.07448452711105347,
+        "v2_unsafe_gt_compliant": false,
+        "v1_p_unsafe": 0.6824348568916321,
+        "v1_p_compliant": 0.704864501953125,
+        "v1_delta_p": -0.02242964506149292,
+        "v1_unsafe_gt_compliant": false
+      },
+      {
+        "group_id": "CF_PAIR_CONF_07",
+        "hazard_type": "Confined-Space",
+        "unsafe_report_text": "Standby watchman left entry hatch unattended for 45 minutes to get coffee while 2 entrants remained inside diesel tank.",
+        "compliant_report_text": "Standby watchman remained at diesel tank entry hatch maintaining constant radio communication and logging entrant status every 10 minutes.",
+        "v2_p_unsafe": 0.3846469521522522,
+        "v2_p_compliant": 0.3946264982223511,
+        "v2_delta_p": -0.009979546070098877,
+        "v2_unsafe_gt_compliant": false,
+        "v1_p_unsafe": 0.39240506291389465,
+        "v1_p_compliant": 0.6375483870506287,
+        "v1_delta_p": -0.245143324136734,
+        "v1_unsafe_gt_compliant": false
+      },
+      {
+        "group_id": "CF_PAIR_HGHT_06",
+        "hazard_type": "Fall-from-height",
+        "unsafe_report_text": "Insulators used mobile scaffold tower on sloped gravel surface with unlocked caster wheels and missing outriggers at 8 meters height.",
+        "compliant_report_text": "Insulators locked all four caster wheels, deployed stabilizer outriggers, and leveled mobile scaffold base before climbing to 8 meters.",
+        "v2_p_unsafe": 0.6229891777038574,
+        "v2_p_compliant": 0.507407546043396,
+        "v2_delta_p": 0.11558163166046143,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.6446771621704102,
+        "v1_p_compliant": 0.7405514121055603,
+        "v1_delta_p": -0.09587424993515015,
+        "v1_unsafe_gt_compliant": false
+      },
+      {
+        "group_id": "CF_PAIR_HGHT_07",
+        "hazard_type": "Fall-from-height",
+        "unsafe_report_text": "Construction worker used damaged safety harness with fraying webbing cut across 40% of load-bearing chest strap.",
+        "compliant_report_text": "Construction worker performed pre-use harness inspection, verified intact stitching and zero webbing fraying before ascending ladder.",
+        "v2_p_unsafe": 0.6540692448616028,
+        "v2_p_compliant": 0.38546010851860046,
+        "v2_delta_p": 0.2686091363430023,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.6930928230285645,
+        "v1_p_compliant": 0.6852250099182129,
+        "v1_delta_p": 0.007867813110351562,
+        "v1_unsafe_gt_compliant": true
+      },
+      {
+        "group_id": "CF_PAIR_LIFT_05",
+        "hazard_type": "Vehicle-Equipment",
+        "unsafe_report_text": "Crane boom passed within 4 feet of 33kV overhead power line with anti-two-block limit switch disabled.",
+        "compliant_report_text": "Crane boom operated with mechanical limit stops maintaining 20-foot buffer from 33kV power line with dedicated electrical spotter.",
+        "v2_p_unsafe": 0.5961552262306213,
+        "v2_p_compliant": 0.48924148082733154,
+        "v2_delta_p": 0.1069137454032898,
+        "v2_unsafe_gt_compliant": true,
+        "v1_p_unsafe": 0.750402569770813,
+        "v1_p_compliant": 0.7489593625068665,
+        "v1_delta_p": 0.0014432072639465332,
+        "v1_unsafe_gt_compliant": true
+      },
+      {
+        "group_id": "CF_PAIR_VEH_05",
+        "hazard_type": "Vehicle-Equipment",
+        "unsafe_report_text": "Tanker truck driver bypassed wheel chocking on 5% grade and exited cab with air brake valve in released position.",
+        "compliant_report_text": "Tanker truck driver set primary maxi air brakes and placed heavy rubber wheel chocks under both drive axles before leaving cab.",
+        "v2_p_unsafe": 0.4927400052547455,
+        "v2_p_compliant": 0.5172836780548096,
+        "v2_delta_p": -0.024543672800064087,
+        "v2_unsafe_gt_compliant": false,
+        "v1_p_unsafe": 0.6771217584609985,
+        "v1_p_compliant": 0.696930468082428,
+        "v1_delta_p": -0.019808709621429443,
+        "v1_unsafe_gt_compliant": false
+      }
+    ]
+  },
+  "gate_assessment": {
+    "original_test_performance": "PASS",
+    "hard_negative_performance": "PASS",
+    "counterfactual_contextual_sensitivity": "NEEDS FURTHER DATA",
+    "overall_recommendation": "REFINE_DATA_OR_TRAINING"
+  }
+}

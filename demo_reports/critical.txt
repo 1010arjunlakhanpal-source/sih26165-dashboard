@@ -1,0 +1,1 @@
+Electrician worked on energized 480V MCC panel without applying lockout tagout or verifying absence of voltage.

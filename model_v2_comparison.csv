@@ -1,0 +1,13 @@
+evaluation_scope,metric,model_v1_phase6c,model_v2_optimal,delta_improvement
+Original Test Set (Preserved 120 samples),Accuracy,0.5416666666666666,0.525,-0.016666666666666607
+Original Test Set (Preserved 120 samples),Critical-SIF Precision,0.4883720930232558,0.4803921568627451,-0.007979936160510681
+Original Test Set (Preserved 120 samples),Critical-SIF Recall,0.7924528301886793,0.9245283018867925,0.13207547169811318
+Original Test Set (Preserved 120 samples),Critical-SIF F1,0.60431654676259,0.632258064516129,0.027941517753539036
+Original Test Set (Preserved 120 samples),False Positives (/67),44.0,53.0,-9.0
+Original Test Set (Preserved 120 samples),False Negatives (/53),11.0,4.0,7.0
+Hard-Negative Benchmark (39 samples),Overall Accuracy,0.2564102564102564,0.6666666666666666,0.41025641025641024
+Hard-Negative Benchmark (39 samples),Compliant False Positives (/29),28.0,11.0,17.0
+Hard-Negative Benchmark (39 samples),Compliant Specificity / Recall,0.034482758620689655,0.6206896551724138,0.5862068965517242
+Hard-Negative Benchmark (39 samples),Unsafe SIF Recall (/10),0.9,0.8,-0.09999999999999998
+Counterfactual Sensitivity (10 Pairs),Mean Delta P,-0.028462520241737364,0.07882073819637299,0.10728325843811035
+Counterfactual Sensitivity (10 Pairs),Pairs Unsafe > Compliant,4.0,7.0,3.0
